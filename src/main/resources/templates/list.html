@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <table border="1">
+        <tr>
+            <td colspan="7" align="right">
+                <form th:action="list" method="post" enctype="text/plain">
+                    <input type="text" name="name">
+                    <input type="submit" value="搜索">
+                </form>
+            </td>
+            <td>
+                <a th:href="@{/new}" th:text="新增"></a>
+            </td>
+        </tr>
+        <tr>
+            <th>id</th>
+            <th>姓名</th>
+            <th>性别</th>
+            <th>生日</th>
+            <th>电话</th>
+            <th>地址</th>
+            <th>角色</th>
+            <th>操作</th>
+        </tr>
+        <tr th:each="user:${users}">
+            <td th:text="${user[id]}"></td>
+            <td th:text="${user[userName]}"></td>
+            <td th:if="${user[gender]} eq 1">男</td>
+            <td th:if="${user[gender]} eq 2">女</td>
+            <td th:text="${user[birthday]}"></td>
+            <td th:text="${user[phone]}"></td>
+            <td th:text="${user[address]}"></td>
+            <td th:text="${user[roleName]}"></td>
+            <td>
+                <a th:href="@{/get(id=${user[id]})}">修改</a>/
+                <a th:href="@{#}" class="delete" th:attr="did=${user[id]}">删除</a>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+
+<script type="text/javascript" th:src="@{https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js}"></script>
+<script th:inline="javascript">
+    $(function () {
+        $(".delete").click(function () {
+            var o = $(this);
+            var did = $(this).attr("did");
+            $.ajax({
+                url:"delete/"+did,
+                dataType:"json",
+                success:function (data) {
+                    if(data>0){
+                        o.parent().parent().remove();
+                    }
+                }
+            })
+        })
+    })
+</script>
